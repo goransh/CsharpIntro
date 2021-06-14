@@ -11,13 +11,13 @@ namespace CsharpIntro {
             var anonymousDevelopers = developers.Select(
                 developer => new {
                     developer.Type,
-                    HasEnergy = developer.LinesOfCodePerDay > 0,
+                    IsProductive = developer.LinesOfCodePerDay > 50,
                 }
             );
 
             foreach (var anonymousDeveloper in anonymousDevelopers) {
                 Console.WriteLine(
-                    $"A {anonymousDeveloper.Type:G} developer has{(anonymousDeveloper.HasEnergy ? "" : " no")} energy"
+                    $"A {anonymousDeveloper.Type:G} developer is{(anonymousDeveloper.IsProductive ? "" : " not")} productive"
                 );
             }
 
@@ -40,8 +40,8 @@ namespace CsharpIntro {
                 Console.WriteLine($"{type:G} developers: {namesJoined}");
             }
 
-            // advanced: pattern matching
-            var backendDevsWithEnergy =
+            // pattern matching
+            var productiveBackendDevelopers =
                 developers.Where(developer => developer is {Type: DeveloperType.Backend, LinesOfCodePerDay: >50});
         }
     }

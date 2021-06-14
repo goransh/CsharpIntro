@@ -31,7 +31,6 @@ namespace CsharpIntro {
                 orderby dev.Age
                 select dev.Name;
 
-
             // grouping
             var groupedByType = developers.GroupBy(developer => developer.Type);
 
