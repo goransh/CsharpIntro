@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 
 namespace CsharpIntro {
-    public class Basics {
-        public static void BasicExamples() {
+    public static class Basics {
+        public static void Run() {
             // variables
             int one = 1;
             string hello = "Hello";
@@ -31,7 +31,7 @@ namespace CsharpIntro {
             numbers.ForEach(Console.WriteLine);
             
             // (roughly) the same as:
-            // numbers.ForEach(number => Console.WriteLine(number));
+            numbers.ForEach(number => Console.WriteLine(number));
 
         }
     }
