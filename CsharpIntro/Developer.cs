@@ -2,7 +2,7 @@
 
 namespace CsharpIntro {
     public class Developer {
-        public string Name { get; set; }
+        public string Name { get; set; } = null;
         public DateTime Birthday { get; set; } // = null; doesn't work since it's value type (struct)
 
         // backing field
