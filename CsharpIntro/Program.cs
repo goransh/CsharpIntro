@@ -5,7 +5,7 @@ namespace CsharpIntro {
         static void Main(string[] args) {
             Console.WriteLine("Hello World!");
             
-            LinqExamples.Run();
+            BasicLinq.Run();
         }
     }
 }
