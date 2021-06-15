@@ -6,7 +6,7 @@ namespace CsharpIntro {
         public static void Run() {
             // collection initializers
             var numbers = new List<int> {1, 2, 3};
-            var strings = new List<string> {"A", "List", "of", "Strings"};
+            var strings = new HashSet<string> {"A", "Set", "of", "Strings"};
 
             // traditional constructors works as expected
             var myObject = new MyClass("Some Value");
