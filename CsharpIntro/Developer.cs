@@ -1,9 +1,11 @@
 ﻿using System;
 
 namespace CsharpIntro {
-    public class Developer {
-        public string Name { get; set; } = null;
+    public class Developer : Person {
+        public override string? Name { get; set; } = null;
         public DateTime Birthday { get; set; } // = null; doesn't work since it's value type (struct)
+
+        public IPerson? Leader { get; set; }
 
         // backing field
         private int _linesOfCodePerDay = 0;
@@ -53,12 +55,18 @@ namespace CsharpIntro {
         //     LinesOfCodePerDay += linesPerDayBoost * amount;
         // }
 
-        public string SayHello() => $"Hello, my name is {Name} and I'm a {Type:G} developer!";
+        public override string SayHello() => $"{base.SayHello()} and I'm a {Type:G} developer!";
 
         // same as:
         // public string SayHello() {
         //     return $"Hello, my name is {Name} and I'm a {Type:G} developer!";
         // }
+
+        public string SayLeaderName() {
+            // null conditional and null coalescing operators
+            var leaderName = Leader?.Name ?? "<unknown>";
+            return $"My leader's name is {leaderName}!";
+        }
     }
 
     public enum Beverage {
