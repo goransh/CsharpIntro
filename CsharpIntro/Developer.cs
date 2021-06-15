@@ -2,8 +2,11 @@
 
 namespace CsharpIntro {
     public class Developer : Person {
-        public override string? Name { get; set; } = null;
-        public DateTime Birthday { get; set; } // = null; doesn't work since it's value type (struct)
+
+        private static readonly DateTime MinDate = new DateTime(1970, 01, 01);
+        public override DateTime Birthday { 
+            set => base.Birthday = value < MinDate ? MinDate : value;
+        }
 
         public IPerson? Leader { get; set; }
 
