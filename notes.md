@@ -35,9 +35,33 @@ numbers.ForEach(number => Console.WriteLine(number));
 
 ## Classes
 ```csharp
-public class Developer {
-    public string Name { get; set; } = null;
-    public DateTime Birthday { get; set; } // = null; doesn't work since it's value type (struct)
+public interface IPerson {
+    public string Name { get; set; }
+    public DateTime Birthday { get; set; }
+    public string SayHello();
+}
+
+public class Person : IPerson {
+    public string? Name { get; set; } // = null; (reference type)
+    public virtual DateTime Birthday { get; set; } // = null; doesn't work since it's value type (struct)
+    public virtual string SayHello() => $"Hello, my name is {Name}";
+}
+```
+
+* properties and methods
+* initializers 
+* interfaces
+* nullable reference types and value types
+
+```csharp
+public class Developer : Person {
+
+    private static readonly DateTime MinDate = new DateTime(1970, 01, 01);
+    public override DateTime Birthday { 
+        set => base.Birthday = value < MinDate ? MinDate : value;
+    }
+
+    public IPerson? Leader { get; set; }
 
     // backing field
     private int _linesOfCodePerDay = 0;
@@ -87,12 +111,18 @@ public class Developer {
     //     LinesOfCodePerDay += linesPerDayBoost * amount;
     // }
 
-    public string SayHello() => $"Hello, my name is {Name} and I'm a {Type:G} developer!";
+    public override string SayHello() => $"{base.SayHello()} and I'm a {Type:G} developer!";
 
     // same as:
     // public string SayHello() {
     //     return $"Hello, my name is {Name} and I'm a {Type:G} developer!";
     // }
+
+    public string SayLeaderName() {
+        // null conditional and null coalescing operators
+        var leaderName = Leader?.Name ?? "<unknown>";
+        return $"My leader's name is {leaderName}!";
+    }
 }
 
 public enum Beverage {
@@ -109,67 +139,38 @@ public enum DeveloperType {
 }
 ```
 
-## Inheritance and nullable reference types
-
-```csharp
-
-public class Laptop {
-    public string Id { get; set; }
-
-    // nullable reference types
-    public Developer? Owner { get; set; }
-
-    public virtual string? Type { get; } = null;
-
-    // method using null coalescing operators
-    public virtual string GetOwnerString() {
-        var ownerName = Owner?.Name ?? "<Unknown>";
-        return $"Laptop with Id {Id} is owned by {ownerName}";
-    }
-}
-
-class WindowsLaptop : Laptop {
-    // override function, calling the base implementation
-    public override string GetOwnerString() => $"Windows {base.GetOwnerString()}";
-
-    // override property
-    public override string? Type => "Windows";
-}
-```
+* inheritance, virtual, base
+* custom getters and setters
 
 ## Initializers
 
 ```csharp
-// collection initializers
-var numbers = new List<int> {1, 2, 3};
-var strings = new List<string> {"A", "List", "of", "Strings"};
+public static class Initializers {
+    public static void Run() {
+        // collection initializers
+        var numbers = new List<int> {1, 2, 3};
+        var strings = new List<string> {"A", "List", "of", "Strings"};
 
-// traditional constructors works as expected
-var myObject = new MyClass("Some Value");
+        // traditional constructors works as expected
+        var myObject = new MyClass("Some Value");
 
-// but in C# we prefer object initializers
-var developer = new Developer {
-    Name = "Ann",
-    Birthday = new DateTime(1994, 12, 01),
-    Type = DeveloperType.FullStack,
-};
+        // but in C# we prefer object initializers
+        var developer = new Developer {
+            Name = "Ann",
+            Birthday = new DateTime(1994, 12, 01),
+            Type = DeveloperType.FullStack,
+        };
 
-// dictionary (map) initializer
-var dict = new Dictionary<string, Developer> {
-    {"joe", developer}, // {key, value} 
-    {
-        "kari",
-        new Developer {
-            Name = "John",
-            Birthday = new DateTime(2001, 03, 15),
-            LinesOfCodePerDay = 100,
-            Type = DeveloperType.Backend,
-        }
-    },
-};
+        // dictionary (map) initializer
+        var dict = new Dictionary<string, IPerson> {
+            {"ann", developer}, // {key, value} 
+            {"john", new Person {Name = "John"}},
+        };
 
-var joe = dict["joe"];
-var joeSafe = dict.GetValueOrDefault("joe");
+        var ann = dict["ann"];
+        var annSafe = dict.GetValueOrDefault("ann");
+    }
+}
 
 class MyClass {
     public string Value { get; set; }
@@ -193,8 +194,6 @@ public static class StringExtensions {
             .ToString();
 }
 ```
-
-
 
 ## BasicLinq
 
@@ -239,7 +238,6 @@ foreach (var grouping in groupedByType) {
 ```csharp
 public static void Run() {
     var developers = Data.Developers;
-    // warning: linq is lazy
 
     var computed = developers.Select(DoSomeHeavyComputation);
 
@@ -250,16 +248,12 @@ public static void Run() {
     var sum = computed.Sum();
     Console.WriteLine($"The sum is {sum}");
 
-    var average = developers
-        .AsParallel()
-        .AsOrdered()
-        .Select(DoSomeHeavyComputation)
-        .Take(3)
-        .Average();
-    Console.WriteLine($"The average value is {average}");
+    foreach (var value in computed.Take(3)) {
+        Console.WriteLine($"The computed value was {value}");
+    }
 }
 
-private static int DoSomeHeavyComputation(Developer developer) {
+public static int DoSomeHeavyComputation(Developer developer) {
     Console.WriteLine($"Doing some heavy computation for {developer.Name}!");
     return new Random(developer.LinesOfCodePerDay).Next() % 1_000;
 }
@@ -274,13 +268,13 @@ var developers = Data.Developers;
 var anonymousDevelopers = developers.Select(
     developer => new {
         developer.Type,
-        HasEnergy = developer.LinesOfCodePerDay > 0,
+        IsProductive = developer.LinesOfCodePerDay > 50,
     }
 );
 
 foreach (var anonymousDeveloper in anonymousDevelopers) {
     Console.WriteLine(
-        $"A {anonymousDeveloper.Type:G} developer has{(anonymousDeveloper.HasEnergy ? "" : " no")} energy"
+        $"A {anonymousDeveloper.Type:G} developer is{(anonymousDeveloper.IsProductive ? "" : " not")} productive"
     );
 }
 
@@ -303,8 +297,14 @@ foreach (var (type, list) in developersByType) {
     Console.WriteLine($"{type:G} developers: {namesJoined}");
 }
 
-// advanced: pattern matching
-var backendDevsWithEnergy =
+// pattern matching
+var productiveBackendDevelopers =
     developers.Where(developer => developer is {Type: DeveloperType.Backend, LinesOfCodePerDay: >50});
+
+// parallel
+var average = developers
+    .AsParallel()
+    .Select(LazyLinq.DoSomeHeavyComputation)
+    .Average();
 
 ```

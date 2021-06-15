@@ -10,7 +10,7 @@ namespace CsharpIntro {
 
             // traditional constructors works as expected
             var myObject = new MyClass("Some Value");
-            
+
             // but in C# we prefer object initializers
             var developer = new Developer {
                 Name = "Ann",
@@ -19,17 +19,9 @@ namespace CsharpIntro {
             };
 
             // dictionary (map) initializer
-            var dict = new Dictionary<string, Developer> {
+            var dict = new Dictionary<string, IPerson> {
                 {"ann", developer}, // {key, value} 
-                {
-                    "john",
-                    new Developer {
-                        Name = "John",
-                        Birthday = new DateTime(2001, 03, 15),
-                        LinesOfCodePerDay = 100,
-                        Type = DeveloperType.Backend,
-                    }
-                },
+                {"john", new Person {Name = "John"}},
             };
 
             var ann = dict["ann"];
