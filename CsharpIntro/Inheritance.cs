@@ -1,6 +1,12 @@
-﻿namespace CsharpIntro {
-    public class Laptop {
-        public string Id { get; set; }
+﻿using System;
+
+namespace CsharpIntro {
+    public interface ILaptop {
+        public Guid Id { get; set; }
+    }
+
+    public class Laptop : ILaptop {
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         // nullable reference types
         public Developer? Owner { get; set; }

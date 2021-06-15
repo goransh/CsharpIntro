@@ -43,6 +43,12 @@ namespace CsharpIntro {
             // pattern matching
             var productiveBackendDevelopers =
                 developers.Where(developer => developer is {Type: DeveloperType.Backend, LinesOfCodePerDay: >50});
+            
+            // parallel
+            var average = developers
+                .AsParallel()
+                .Select(LazyLinq.DoSomeHeavyComputation)
+                .Average();
         }
     }
 }

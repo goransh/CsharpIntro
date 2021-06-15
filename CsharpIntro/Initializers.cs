@@ -20,9 +20,9 @@ namespace CsharpIntro {
 
             // dictionary (map) initializer
             var dict = new Dictionary<string, Developer> {
-                {"joe", developer}, // {key, value} 
+                {"ann", developer}, // {key, value} 
                 {
-                    "kari",
+                    "john",
                     new Developer {
                         Name = "John",
                         Birthday = new DateTime(2001, 03, 15),
@@ -32,8 +32,8 @@ namespace CsharpIntro {
                 },
             };
 
-            var joe = dict["joe"];
-            var joeSafe = dict.GetValueOrDefault("joe");
+            var ann = dict["ann"];
+            var annSafe = dict.GetValueOrDefault("ann");
         }
     }
 

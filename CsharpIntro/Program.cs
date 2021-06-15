@@ -8,8 +8,8 @@ namespace CsharpIntro {
             Basics.Run();
             Initializers.Run();
             BasicLinq.Run();
-            AdvancedLinq.Run();
             LazyLinq.Run();
+            AdvancedLinq.Run();
             Console.WriteLine("Hello ".Repeat(10));
             
         }
