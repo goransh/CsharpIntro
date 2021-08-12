@@ -35,7 +35,7 @@ namespace CsharpIntro {
                 Name = "Lucas",
                 Birthday = new DateTime(1999, 05, 05),
                 LinesOfCodePerDay = 51,
-                Type = DeveloperType.Unspecified,
+                Type = DeveloperType.Backend,
             },
         };
     }

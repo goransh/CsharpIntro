@@ -10,7 +10,7 @@ namespace CsharpIntro {
 
     public class Person : IPerson {
         public string? Name { get; set; } // = null; (reference type)
-        public virtual DateTime Birthday { get; set; } // = null; doesn't work since it's value type (struct)
-        public virtual string SayHello() => $"Hello, my name is {Name}";
+        public DateTime Birthday { get; set; } // = null; doesn't work since it's value type (struct)
+        public virtual string SayHello() => $"Hello, my name is {Name ?? "<REDACTED>"}";
     }
 }

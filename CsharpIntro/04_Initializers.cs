@@ -5,8 +5,8 @@ namespace CsharpIntro {
     public static class Initializers {
         public static void Run() {
             // collection initializers
-            var numbers = new List<int> {1, 2, 3};
-            var strings = new HashSet<string> {"A", "Set", "of", "Strings"};
+            var numbers = new List<int> { 1, 2, 3 };
+            var strings = new HashSet<string> { "A", "Set", "of", "Strings" };
 
             // traditional constructors works as expected
             var myObject = new MyClass("Some Value");
@@ -20,12 +20,12 @@ namespace CsharpIntro {
 
             // dictionary (map) initializer
             var dict = new Dictionary<string, IPerson> {
-                {"ann", developer}, // {key, value} 
-                {"john", new Person {Name = "John"}},
+                { "ann", developer }, // {key, value} 
+                { "john", new Person { Name = "John" } },
             };
 
             var ann = dict["ann"];
-            var annSafe = dict.GetValueOrDefault("ann");
+            var annSafe = dict.GetValueOrDefault("ann")?.Name ?? "<Unknown>";
         }
     }
 

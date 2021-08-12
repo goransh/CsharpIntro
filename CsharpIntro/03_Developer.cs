@@ -3,11 +3,6 @@
 namespace CsharpIntro {
     public class Developer : Person {
 
-        private static readonly DateTime MinDate = new DateTime(1970, 01, 01);
-        public override DateTime Birthday { 
-            set => base.Birthday = value < MinDate ? MinDate : value;
-        }
-
         public IPerson? Leader { get; set; }
 
         // backing field
@@ -64,12 +59,6 @@ namespace CsharpIntro {
         // public string SayHello() {
         //     return $"Hello, my name is {Name} and I'm a {Type:G} developer!";
         // }
-
-        public string SayLeaderName() {
-            // null conditional and null coalescing operators
-            var leaderName = Leader?.Name ?? "<unknown>";
-            return $"My leader's name is {leaderName}!";
-        }
     }
 
     public enum Beverage {
@@ -79,7 +68,6 @@ namespace CsharpIntro {
     }
 
     public enum DeveloperType {
-        Unspecified,
         Backend,
         Frontend,
         FullStack,

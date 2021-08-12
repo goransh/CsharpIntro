@@ -26,13 +26,10 @@ namespace CsharpIntro {
             foreach (var number in numbers) {
                 Console.WriteLine(number);
             }
-
-            // functional style loop
-            numbers.ForEach(Console.WriteLine);
             
-            // (roughly) the same as:
+            // functional style loop
             numbers.ForEach(number => Console.WriteLine(number));
-
+            numbers.ForEach(Console.WriteLine); // equivalent
         }
     }
 }
