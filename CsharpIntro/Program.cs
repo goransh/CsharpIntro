@@ -3,14 +3,12 @@
 namespace CsharpIntro {
     class Program {
         static void Main(string[] args) {
-            // Console.WriteLine("Hello World!");
+            Console.WriteLine("Hello World!");
             
-            Basics.Run();
-            Initializers.Run();
-            BasicLinq.Run();
-            LazyLinq.Run();
-            AdvancedLinq.Run();
-            Console.WriteLine("Hello ".Repeat(10));
+            // Basics.Run();
+            // Initializers.Run();
+            // BasicLinq.Run();
+            // LazyLinq.Run();
             
         }
     }
