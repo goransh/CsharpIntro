@@ -1,13 +1,11 @@
-﻿namespace WebApplication {
-    /*
-     * C# 9 introduced records which are classes that automatically implement
-     * Equals and HashCode. They are immutable by default and have a simplified syntax
-     * for defining properties and constructors.
-     */
-    public record Todo(
-        int Id,
-        int UserId,
-        string Title,
-        bool Completed = false
-    );
+﻿using System;
+
+namespace WebApplication {
+    public class Todo {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Description { get; set; }
+        public bool Completed { get; set; }
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
+        public Todo(string description) => Description = description;
+    }
 }

@@ -26,6 +26,7 @@ namespace CsharpIntro {
             var linesPerDayBoost = beverage switch {
                 Beverage.Coffee => 10,
                 Beverage.Tea => 5,
+                Beverage.EnergyDrink when Type is DeveloperType.Frontend => 200,
                 Beverage.EnergyDrink => 100,
                 _ => throw new ArgumentOutOfRangeException(nameof(beverage), beverage, null),
             };
@@ -44,7 +45,7 @@ namespace CsharpIntro {
         //             linesPerDayBoost = 5;
         //             break;
         //         case Beverage.EnergyDrink:
-        //             linesPerDayBoost = 100;
+        //             linesPerDayBoost = Type is DeveloperType.Frontend ? 200 : 100;
         //             break;
         //         default:
         //             throw new ArgumentOutOfRangeException(nameof(beverage), beverage, null);
