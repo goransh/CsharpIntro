@@ -13,8 +13,19 @@ var two = 1;
 var today = new DateTime(2021, 06, 15);
 Console.WriteLine($"The current year is {today.Year}!"); // string interpolation
 
+// var something = null; // doesn't work, what type is it?
+var nullableString = (string)null;
+// could also write: string nullableString = null;
+var nullableDateTime = (DateTime?)null;
+// could also write: DateTime? nullableDateTime = null;
+
+var defaultString = (string)default; // default == null for reference types like string
+// Alternative syntax: var defaultString = default(string);
+var defaultDateTime = (DateTime)default; // default != null for value types like DateTime and primitives (int, double, bool etc.)
+Console.WriteLine($"Default DateTime: {defaultDateTime:O}");
+
 // loops
-var numbers = new List<int> {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+var numbers = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
 // indexed for loop
 for (var i = 0; i < numbers.Count; i++) {
@@ -27,24 +38,22 @@ foreach (var number in numbers) {
 }
 
 // functional style loop
-numbers.ForEach(Console.WriteLine);
-
-// (roughly) the same as:
 numbers.ForEach(number => Console.WriteLine(number));
+numbers.ForEach(Console.WriteLine); // equivalent
 ```
 
 ## Classes
 ```csharp
 public interface IPerson {
-    public string Name { get; set; }
+    public string? Name { get; set; }
     public DateTime Birthday { get; set; }
     public string SayHello();
 }
 
 public class Person : IPerson {
     public string? Name { get; set; } // = null; (reference type)
-    public virtual DateTime Birthday { get; set; } // = null; doesn't work since it's value type (struct)
-    public virtual string SayHello() => $"Hello, my name is {Name}";
+    public DateTime Birthday { get; set; } // = null; doesn't work since it's value type (struct)
+    public virtual string SayHello() => $"Hello, my name is {Name ?? "<REDACTED>"}";
 }
 ```
 
@@ -55,11 +64,6 @@ public class Person : IPerson {
 
 ```csharp
 public class Developer : Person {
-
-    private static readonly DateTime MinDate = new DateTime(1970, 01, 01);
-    public override DateTime Birthday { 
-        set => base.Birthday = value < MinDate ? MinDate : value;
-    }
 
     public IPerson? Leader { get; set; }
 
@@ -84,6 +88,7 @@ public class Developer : Person {
         var linesPerDayBoost = beverage switch {
             Beverage.Coffee => 10,
             Beverage.Tea => 5,
+            Beverage.EnergyDrink when Type is DeveloperType.Frontend => 200,
             Beverage.EnergyDrink => 100,
             _ => throw new ArgumentOutOfRangeException(nameof(beverage), beverage, null),
         };
@@ -102,7 +107,7 @@ public class Developer : Person {
     //             linesPerDayBoost = 5;
     //             break;
     //         case Beverage.EnergyDrink:
-    //             linesPerDayBoost = 100;
+    //             linesPerDayBoost = Type is DeveloperType.Frontend ? 200 : 100;
     //             break;
     //         default:
     //             throw new ArgumentOutOfRangeException(nameof(beverage), beverage, null);
@@ -117,12 +122,6 @@ public class Developer : Person {
     // public string SayHello() {
     //     return $"Hello, my name is {Name} and I'm a {Type:G} developer!";
     // }
-
-    public string SayLeaderName() {
-        // null conditional and null coalescing operators
-        var leaderName = Leader?.Name ?? "<unknown>";
-        return $"My leader's name is {leaderName}!";
-    }
 }
 
 public enum Beverage {
@@ -132,7 +131,6 @@ public enum Beverage {
 }
 
 public enum DeveloperType {
-    Unspecified,
     Backend,
     Frontend,
     FullStack,
@@ -148,8 +146,8 @@ public enum DeveloperType {
 public static class Initializers {
     public static void Run() {
         // collection initializers
-        var numbers = new List<int> {1, 2, 3};
-        var strings = new List<string> {"A", "List", "of", "Strings"};
+        var numbers = new List<int> { 1, 2, 3 };
+        var strings = new HashSet<string> { "A", "Set", "of", "Strings" };
 
         // traditional constructors works as expected
         var myObject = new MyClass("Some Value");
@@ -163,12 +161,12 @@ public static class Initializers {
 
         // dictionary (map) initializer
         var dict = new Dictionary<string, IPerson> {
-            {"ann", developer}, // {key, value} 
-            {"john", new Person {Name = "John"}},
+            { "ann", developer }, // {key, value} 
+            { "john", new Person { Name = "John" } },
         };
 
         var ann = dict["ann"];
-        var annSafe = dict.GetValueOrDefault("ann");
+        var annSafe = dict.GetValueOrDefault("ann")?.Name ?? "<Unknown>";
     }
 }
 
@@ -257,54 +255,4 @@ public static int DoSomeHeavyComputation(Developer developer) {
     Console.WriteLine($"Doing some heavy computation for {developer.Name}!");
     return new Random(developer.LinesOfCodePerDay).Next() % 1_000;
 }
-```
-
-## Advanced linq
-
-```csharp
-var developers = Data.Developers;
-
-// anonymous types
-var anonymousDevelopers = developers.Select(
-    developer => new {
-        developer.Type,
-        IsProductive = developer.LinesOfCodePerDay > 50,
-    }
-);
-
-foreach (var anonymousDeveloper in anonymousDevelopers) {
-    Console.WriteLine(
-        $"A {anonymousDeveloper.Type:G} developer is{(anonymousDeveloper.IsProductive ? "" : " not")} productive"
-    );
-}
-
-// group by multiple properties
-var groupedByTypeAndBirthYear =
-    developers.GroupBy(developer => new {developer.Type, developer.Birthday.Year});
-
-var developersByType = developers
-    .GroupBy(developer => developer.Type)
-    .ToImmutableDictionary(
-        group => group.Key,
-        group => group.ToImmutableList()
-    );
-
-var fullStackDevelopers = developersByType[DeveloperType.FullStack];
-
-// destructuring tuples
-foreach (var (type, list) in developersByType) {
-    var namesJoined = string.Join(", ", list.Select(developer => developer.Name));
-    Console.WriteLine($"{type:G} developers: {namesJoined}");
-}
-
-// pattern matching
-var productiveBackendDevelopers =
-    developers.Where(developer => developer is {Type: DeveloperType.Backend, LinesOfCodePerDay: >50});
-
-// parallel
-var average = developers
-    .AsParallel()
-    .Select(LazyLinq.DoSomeHeavyComputation)
-    .Average();
-
 ```
